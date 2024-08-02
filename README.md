@@ -1,7 +1,9 @@
 [![Gem Version](https://badge.fury.io/rb/capistrano3-puma.svg)](http://badge.fury.io/rb/capistrano3-puma)
 # Capistrano::Puma
 
-Fork from [seuros/capistrano-puma](https://github.com/seuros/capistrano-puma). Needed puma 4 compatibility without deprecation warnings while using ruby >= 3.
+Fork from [seuros/capistrano-puma](https://github.com/seuros/capistrano-puma). 
+
+Needed puma 4 compatibility without deprecation warnings while using ruby >= 3.
 
 ## Installation
 

@@ -5,7 +5,7 @@
 
 Add this line to your application's Gemfile:
 
-    gem 'capistrano3-puma', github: "seuros/capistrano-puma"
+    gem 'capistrano3-puma', github: "soeren-klatt/capistrano-puma"
 
 or:
 

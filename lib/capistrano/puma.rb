@@ -111,7 +111,7 @@ module Capistrano
       set_if_empty :puma_bind, -> { File.join("unix://#{shared_path}", 'tmp', 'sockets', 'puma.sock') }
       set_if_empty :puma_control_app, false
       set_if_empty :puma_default_control_app, -> { File.join("unix://#{shared_path}", 'tmp', 'sockets', 'pumactl.sock') }
-      set_if_empty :puma_conf, -> { File.join(shared_path, 'puma.rb') }
+      set_if_empty :puma_conf, -> { File.join(shared_path, 'config/puma.rb') }
       set_if_empty :puma_access_log, -> { File.join(shared_path, 'log', 'puma_access.log') }
       set_if_empty :puma_error_log, -> { File.join(shared_path, 'log', 'puma_error.log') }
       set_if_empty :puma_init_active_record, false

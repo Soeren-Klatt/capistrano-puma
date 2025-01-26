@@ -28,6 +28,15 @@ module Capistrano
       end.join("\n")
     end
 
+    def service_unit_type
+      ## Jruby don't support notify
+      return "simple" if RUBY_ENGINE == "jruby"
+      fetch(:puma_service_unit_type,
+      ## Check if sd_notify is available in the bundle
+        Gem::Specification.find_all_by_name("sd_notify").any? ? "notify" : "simple")
+
+    end
+
     def compiled_template_puma(from, role)
       @role = role
       file = [

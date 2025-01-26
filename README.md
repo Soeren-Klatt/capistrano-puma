@@ -28,13 +28,9 @@ And then execute:
     install_plugin Capistrano::Puma  # Default puma tasks
     install_plugin Capistrano::Puma::Nginx  # if you want to upload a nginx site template
 ```
-You will need to select your service manager
+
 ```ruby
-install_plugin Capistrano::Puma::Daemon  # If you using puma daemonized (not supported in Puma 5+)
-```
-or
-```ruby
-install_plugin Capistrano::Puma::Systemd  # if you use SystemD
+install_plugin Capistrano::Puma::Systemd  # Systemd is needed for puma 5+
 ```
 
 To prevent loading the hooks of the plugin, add false to the load_hooks param.
@@ -43,7 +39,6 @@ To prevent loading the hooks of the plugin, add false to the load_hooks param.
 
     require 'capistrano/puma'
     install_plugin Capistrano::Puma, load_hooks: false  # Default puma tasks without hooks
-    install_plugin Capistrano::Puma::Monit, load_hooks: false  # Monit tasks without hooks
 ```
 
 To make it work with rvm, rbenv and chruby, install the plugin after corresponding library inclusion.
@@ -63,10 +58,48 @@ To upload puma config use:
 ```ruby
 cap production puma:config
 ```
-By default the file located in  `shared/puma.rb`
+By default the file located in  `shared/config/puma.rb`
 
+You need to symlink the puma config in your `deploy.rb`:
+```ruby
+set :linked_files, fetch(:linked_files, []).push('config/puma.rb')
+```
 
 Ensure that `tmp/pids` and ` tmp/sockets log` are shared (via `linked_dirs`):
+```ruby
+set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/sockets')
+```
+
+### Systemd Services
+
+To generate a systemd service file use:
+```ruby
+cap production puma:install
+```
+
+To start/stop/restart puma:
+```ruby
+cap production puma:start
+cap production puma:stop
+cap production puma:restart
+```
+
+Depending on your setup you need to define if you want to use `system` or `user` services:
+add to your `deploy.rb` or `deploy/stage.rb`:
+```ruby
+set :systemctl_user, :user # or :system
+```
+User services are located in `~/.config/systemd/user/` and system services in `/etc/systemd/system/`
+
+Linger is a feature of systemd that allows user services to continue running after the user logs out. This is useful for services that need to be available all the time, such as a web server. To enable lingering for a user, run:
+```bash
+loginctl enable-linger username
+```
+and set the following in your `deploy.rb` or `deploy/stage.rb`:
+```ruby
+set :puma_enable_lingering, false # otherwise capistrano-puma wants to enable lingering, which requires root privileges
+```
+If the user has root privileges, you can set `puma_enable_lingering` to `true` to enable lingering for the user automatically.
 
 `This step is mandatory before deploying, otherwise puma server won't start`
 
@@ -95,14 +128,6 @@ set :puma_nginx, :foo
 or define a standalone one:
 ```ruby
 role :puma_nginx, %w{root@example.com}
-```
-
-### Jungle
-
-For Jungle tasks (beta), these options exist:
-```ruby
-    set :puma_jungle_conf, '/etc/puma.conf'
-    set :puma_run_path, '/usr/local/bin/run-puma'
 ```
 
 ### Systemd

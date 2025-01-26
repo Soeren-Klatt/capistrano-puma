@@ -157,9 +157,6 @@ module Capistrano
   end
 end
 
-require 'capistrano/puma/workers'
-require 'capistrano/puma/daemon'
+
 require 'capistrano/puma/systemd'
-require 'capistrano/puma/monit'
-require 'capistrano/puma/jungle'
 require 'capistrano/puma/nginx'
